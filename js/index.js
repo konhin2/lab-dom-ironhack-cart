@@ -41,9 +41,9 @@ function removeProduct(event) {
   const target = event.currentTarget;
   console.log('The target in remove is:', target);
   //... your code goes here
-  // node patern sirve para ir una rama hacia arriba en el doom, lo que hice fue contar las ramas hasta donde queria borrar que era hasta el tr y eran nos ramas por encima del button
+  // node patern sirve para ir una rama hacia arriba en el DOM, lo que hice fue contar las ramas hasta donde queria borrar que era hasta el tr y eran nos ramas por encima del button
   let file = target.parentNode.parentNode
-  let parent = document.querySelector('#cart tbody')
+  let parent = file.parentNode
   parent.removeChild(file)
 }
 
@@ -60,11 +60,6 @@ function createProduct() {
   let trTag = document.createElement('tr')
   trTag.setAttribute('class', 'product')
 
-  // Reutilizando elementos quantity, subtotal y button 
-  // Se tienen que clonar porque sino me arrastraba los elementos nada mas
-  const productQuantity = document.getElementById('quantity').cloneNode(true)
-  const productSubTotal = document.getElementById('subtotal').cloneNode(true)
-  const newButton = document.getElementById('remove').cloneNode(true)
 
   
 
@@ -91,13 +86,48 @@ function createProduct() {
   td.appendChild(span)
   trTag.appendChild(td)
 
-  // Resto de elementos
-  trTag.appendChild(productQuantity)
-  trTag.appendChild(productSubTotal)
-  trTag.appendChild(newButton)
+  // Tercer elemento
+  td = document.createElement('td')
+  let input = document.createElement('input')
+  // Class
+  td.setAttribute('class', 'quantity')
+  input.setAttribute('type', 'number')
+  input.setAttribute('value', '0')
+  input.setAttribute('min', '0')
+  input.setAttribute('placeholder', 'Quantity')
+  // Insercion
+  td.appendChild(input)
+  trTag.appendChild(td)
 
+  // Cuarto elemento
+  td = document.createElement('td')
+  span = document.createElement('span')
+  // Class
+  td.setAttribute('class', 'subtotal')
+  // Valores
+  td.innerText = `$`
+  span.innerText = '0'
+  // Insercion
+  td.appendChild(span)
+  trTag.appendChild(td)
+
+  // Quinto elemento
+  td = document.createElement('td')
+  let button = document.createElement('button')
+  // Class
+  td.setAttribute('class', 'action')
+  td.setAttribute('id', 'remove')
+  button.setAttribute('class', 'btn btn-remove')
+  // Valores
+  button.innerText = 'Remove'
+  // Insercion
+  td.appendChild(button)
+  trTag.appendChild(td)
   // Esta linea es necesaria para devolver a la tbody todos los td acoculados en la variable trTag
   parent.appendChild(trTag)
+  // Funcionalidad al boton
+  let removeNew = trTag.querySelector('.btn-remove')
+  removeNew.addEventListener('click', removeProduct)
 }
 
 
@@ -111,7 +141,6 @@ window.addEventListener('load', () => {
   for (let eachButton of buttonElements) {
     eachButton.addEventListener('click', removeProduct);
   }
-
   // Adding
   const addingBtn = document.getElementById('create');
   addingBtn.addEventListener('click', createProduct);
